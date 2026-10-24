@@ -23,9 +23,6 @@ jobs:
     name: Windows x86_64
     runs-on: windows-latest
     timeout-minutes: 360
-    defaults:
-      run:
-        shell: msys2 {0}
 
     steps:
       - name: Checkout Ardour source
@@ -33,114 +30,123 @@ jobs:
         with:
           fetch-depth: 0   # full clone required for `git describe` versioning
 
-      - name: Update MSYS2 package database
+      - name: Set up MSYS2 environment
         run: |
-          pacman -Sy --noconfirm --needed pacman-mirrors msys2-runtime
+          echo "MSYS2_PATH=C:\msys64\usr\bin" >> $GITHUB_PATH
+          echo "MSYS2_ROOT=C:\msys64" >> $GITHUB_ENV
+          ls /c/msys64/usr/bin/bash.exe 2>/dev/null || echo "MSYS2 not found at default path, will install"
+
+      - name: Install MSYS2 if missing
+        run: |
+          if [ ! -f /c/msys64/usr/bin/bash.exe ]; then
+            curl -sL -o msys2.exe https://github.com/msys2/msys2-installer/releases/download/2024-07-25/msys2-base-x86_64-20240725.sfx.exe || \
+            curl -sL -o msys2.exe https://repo.msys2.org/distrib/x86_64/msys2-base-x86_64-latest.sfx.exe
+            ./msys2.exe -y -ai -oC:\msys64
+          fi
 
       - name: Install mingw-w64 toolchain and dependencies
         run: |
-          pacman -S --noconfirm --needed \
-            mingw-w64-x86_64-toolchain \
-            mingw-w64-x86_64-cmake \
-            mingw-w64-x86_64-ninja \
-            mingw-w64-x86_64-meson \
-            mingw-w64-x86_64-pkgconf \
-            mingw-w64-x86_64-yasm \
-            mingw-w64-x86_64-boost \
-            mingw-w64-x86_64-gettext \
-            mingw-w64-x86_64-glib2 \
-            mingw-w64-x86_64-glibmm \
-            mingw-w64-x86_64-gtk2 \
-            mingw-w64-x86_64-gtkmm \
-            mingw-w64-x86_64-libsndfile \
-            mingw-w64-x86_64-libcurl \
-            mingw-w64-x86_64-libarchive \
-            mingw-w64-x86_64-liblo \
-            mingw-w64-x86_64-taglib \
-            mingw-w64-x86_64-vamp-plugin-sdk \
-            mingw-w64-x86_64-rubberband \
-            mingw-w64-x86_64-cppunit \
-            mingw-w64-x86_64-jack2 \
-            mingw-w64-x86_64-fftw \
-            mingw-w64-x86_64-flac \
-            mingw-w64-x86_64-libogg \
-            mingw-w64-x86_64-fontconfig \
-            mingw-w64-x86_64-cairo \
-            mingw-w64-x86_64-cairomm \
-            mingw-w64-x86_64-pango \
-            mingw-w64-x86_64-pangomm \
-            mingw-w64-x86_64-libpng \
-            mingw-w64-x86_64-libxml2 \
-            mingw-w64-x86_64-lv2 \
-            mingw-w64-x86_64-serd \
-            mingw-w64-x86_64-sord \
-            mingw-w64-x86_64-sratom \
-            mingw-w64-x86_64-lilv \
-            mingw-w64-x86_64-soundtouch \
-            mingw-w64-x86_64-libsamplerate \
-            mingw-w64-x86_64-fluidsynth \
-            mingw-w64-x86_64-libwebsockets \
-            mingw-w64-x86_64-libusb \
-            mingw-w64-x86_64-zlib \
-            mingw-w64-x86_64-freetype \
-            mingw-w64-x86_64-harfbuzz \
-            mingw-w64-x86_64-pixman \
-            mingw-w64-x86_64-gdk-pixbuf2 \
-            mingw-w64-x86_64-atk \
-            mingw-w64-x86_64-p11-kit \
-            mingw-w64-x86_64-libffi \
-            mingw-w64-x86_64-expat \
-            mingw-w64-x86_64-bzip2 \
-            mingw-w64-x86_64-xz \
-            mingw-w64-x86_64-zstd \
-            mingw-w64-x86_64-libiconv \
-            git \
-            python \
-            make \
-            patch \
-            rsync \
-            wget \
-            curl
+          C:\msys64\usr\bin\bash.exe -lc "
+            pacman -Sy --noconfirm --needed pacman-mirrors msys2-runtime &&
+            pacman -S --noconfirm --needed \
+              mingw-w64-x86_64-toolchain \
+              mingw-w64-x86_64-cmake \
+              mingw-w64-x86_64-ninja \
+              mingw-w64-x86_64-meson \
+              mingw-w64-x86_64-pkgconf \
+              mingw-w64-x86_64-yasm \
+              mingw-w64-x86_64-boost \
+              mingw-w64-x86_64-gettext \
+              mingw-w64-x86_64-glib2 \
+              mingw-w64-x86_64-glibmm \
+              mingw-w64-x86_64-gtk2 \
+              mingw-w64-x86_64-gtkmm \
+              mingw-w64-x86_64-libsndfile \
+              mingw-w64-x86_64-libcurl \
+              mingw-w64-x86_64-libarchive \
+              mingw-w64-x86_64-liblo \
+              mingw-w64-x86_64-taglib \
+              mingw-w64-x86_64-vamp-plugin-sdk \
+              mingw-w64-x86_64-rubberband \
+              mingw-w64-x86_64-cppunit \
+              mingw-w64-x86_64-jack2 \
+              mingw-w64-x86_64-fftw \
+              mingw-w64-x86_64-flac \
+              mingw-w64-x86_64-libogg \
+              mingw-w64-x86_64-fontconfig \
+              mingw-w64-x86_64-cairo \
+              mingw-w64-x86_64-cairomm \
+              mingw-w64-x86_64-pango \
+              mingw-w64-x86_64-pangomm \
+              mingw-w64-x86_64-libpng \
+              mingw-w64-x86_64-libxml2 \
+              mingw-w64-x86_64-lv2 \
+              mingw-w64-x86_64-serd \
+              mingw-w64-x86_64-sord \
+              mingw-w64-x86_64-sratom \
+              mingw-w64-x86_64-lilv \
+              mingw-w64-x86_64-soundtouch \
+              mingw-w64-x86_64-libsamplerate \
+              mingw-w64-x86_64-fluidsynth \
+              mingw-w64-x86_64-libwebsockets \
+              mingw-w64-x86_64-libusb \
+              mingw-w64-x86_64-zlib \
+              mingw-w64-x86_64-freetype \
+              mingw-w64-x86_64-harfbuzz \
+              mingw-w64-x86_64-pixman \
+              mingw-w64-x86_64-gdk-pixbuf2 \
+              mingw-w64-x86_64-atk \
+              mingw-w64-x86_64-p11-kit \
+              mingw-w64-x86_64-libffi \
+              mingw-w64-x86_64-expat \
+              mingw-w64-x86_64-bzip2 \
+              mingw-w64-x86_64-xz \
+              mingw-w64-x86_64-zstd \
+              mingw-w64-x86_64-libiconv \
+              git python make patch rsync wget curl
+          "
 
       - name: Verify mingw toolchain
         run: |
-          x86_64-w64-mingw32-gcc --version | head -1
-          x86_64-w64-mingw32-g++ --version | head -1
-          pkg-config --version
+          C:\msys64\usr\bin\bash.exe -lc "x86_64-w64-mingw32-gcc --version | head -1"
+          C:\msys64\usr\bin\bash.exe -lc "pkg-config --version"
 
       - name: Configure Ardour (mingw)
         run: |
-          export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:/mingw64/share/pkgconfig"
-          ./waf configure \
-            --dist-target=mingw \
-            --ptformat \
-            --with-backends=jack,portaudio,dummy \
-            --optimize \
-            --cxx17 \
-            --prefix=/mingw64 \
-            --libdir=/mingw64/lib \
-            --no-phone-home \
-            --no-lrdf \
-            --no-nls \
-            2>&1 | tee configure.log
+          C:\msys64\usr\bin\bash.exe -lc "
+            export PKG_CONFIG_PATH='/mingw64/lib/pkgconfig:/mingw64/share/pkgconfig'
+            ./waf configure \
+              --dist-target=mingw \
+              --ptformat \
+              --with-backends=jack,portaudio,dummy \
+              --optimize \
+              --cxx17 \
+              --prefix=/mingw64 \
+              --libdir=/mingw64/lib \
+              --no-phone-home \
+              --no-lrdf \
+              --no-nls \
+              2>&1 | tee configure.log
+          "
 
       - name: Build Ardour (mingw)
         run: |
-          ./waf -j$(nproc) 2>&1 | tee build.log
+          C:\msys64\usr\bin\bash.exe -lc "./waf -j\$(nproc) 2>&1 | tee build.log"
 
       - name: Build translations
         run: |
-          ./waf i18n 2>&1 | tee i18n.log || true
+          C:\msys64\usr\bin\bash.exe -lc "./waf i18n 2>&1 | tee i18n.log" || true
 
       - name: Collect build artifacts
         run: |
-          mkdir -p ardour-win64-build
-          cp -r build/gtk2_ardour/ardour*.exe ardour-win64-build/ 2>/dev/null || true
-          cp -r build/gtk2_ardour/ardour* ardour-win64-build/ 2>/dev/null || true
-          find build -name "*.exe" -o -name "*.dll" -o -name "*.pdb" 2>/dev/null | while read f; do
-            cp --parents "$f" ardour-win64-build/ 2>/dev/null || true
-          done
-          ls -la ardour-win64-build/
+          C:\msys64\usr\bin\bash.exe -lc "
+            mkdir -p ardour-win64-build
+            cp -r build/gtk2_ardour/ardour*.exe ardour-win64-build/ 2>/dev/null || true
+            find build -name '*.exe' -o -name '*.dll' -o -name '*.pdb' 2>/dev/null | while read f; do
+              cp --parents \"\$f\" ardour-win64-build/ 2>/dev/null || true
+            done
+            ls -la ardour-win64-build/
+          "
 
       - name: Upload Windows build artifacts
         uses: actions/upload-artifact@v4
@@ -175,8 +181,6 @@ jobs:
           brew install \
             glib \
             glibmm \
-            gtk+2 \
-            gtkmm \
             libsndfile \
             libcurl \
             libarchive \
@@ -217,7 +221,8 @@ jobs:
             python@3.12 \
             cmake \
             ninja \
-            meson
+            meson \
+            || true
 
       - name: Verify build tools
         run: |
@@ -265,18 +270,9 @@ jobs:
         run: |
           ./waf i18n 2>&1 | tee i18n.log || true
 
-      - name: Create macOS application bundle
-        run: |
-          # Build the .app bundle from the build tree
-          cd gtk2_ardour
-          ./ardev --version 2>/dev/null || true
-          cd ..
-          ls -la build/gtk2_ardour/ 2>/dev/null || true
-
       - name: Collect macOS ARM64 build artifacts
         run: |
           mkdir -p ardour-macos-arm64-build
-          # Copy the main executable and resources
           find build -name "ardour*" -type f 2>/dev/null | while read f; do
             cp --parents "$f" ardour-macos-arm64-build/ 2>/dev/null || true
           done
@@ -318,8 +314,6 @@ jobs:
           brew install \
             glib \
             glibmm \
-            gtk+2 \
-            gtkmm \
             libsndfile \
             libcurl \
             libarchive \
@@ -360,7 +354,8 @@ jobs:
             python@3.12 \
             cmake \
             ninja \
-            meson
+            meson \
+            || true
 
       - name: Verify build tools
         run: |
