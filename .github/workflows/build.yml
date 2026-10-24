@@ -42,65 +42,65 @@ jobs:
 
       - name: Install mingw-w64 toolchain and dependencies
         run: |
-          & "C:\msys64\usr\bin\bash.exe" -lc @"
-pacman -Sy --noconfirm --needed pacman-mirrors msys2-runtime
-pacman -S --noconfirm --needed \
-  mingw-w64-x86_64-toolchain \
-  mingw-w64-x86_64-cmake \
-  mingw-w64-x86_64-ninja \
-  mingw-w64-x86_64-meson \
-  mingw-w64-x86_64-pkgconf \
-  mingw-w64-x86_64-yasm \
-  mingw-w64-x86_64-boost \
-  mingw-w64-x86_64-gettext \
-  mingw-w64-x86_64-glib2 \
-  mingw-w64-x86_64-glibmm \
-  mingw-w64-x86_64-gtk2 \
-  mingw-w64-x86_64-gtkmm \
-  mingw-w64-x86_64-libsndfile \
-  mingw-w64-x86_64-libcurl \
-  mingw-w64-x86_64-libarchive \
-  mingw-w64-x86_64-liblo \
-  mingw-w64-x86_64-taglib \
-  mingw-w64-x86_64-vamp-plugin-sdk \
-  mingw-w64-x86_64-rubberband \
-  mingw-w64-x86_64-cppunit \
-  mingw-w64-x86_64-jack2 \
-  mingw-w64-x86_64-fftw \
-  mingw-w64-x86_64-flac \
-  mingw-w64-x86_64-libogg \
-  mingw-w64-x86_64-fontconfig \
-  mingw-w64-x86_64-cairo \
-  mingw-w64-x86_64-cairomm \
-  mingw-w64-x86_64-pango \
-  mingw-w64-x86_64-pangomm \
-  mingw-w64-x86_64-libpng \
-  mingw-w64-x86_64-libxml2 \
-  mingw-w64-x86_64-lv2 \
-  mingw-w64-x86_64-serd \
-  mingw-w64-x86_64-sord \
-  mingw-w64-x86_64-sratom \
-  mingw-w64-x86_64-lilv \
-  mingw-w64-x86_64-soundtouch \
-  mingw-w64-x86_64-libsamplerate \
-  mingw-w64-x86_64-fluidsynth \
-  mingw-w64-x86_64-libwebsockets \
-  mingw-w64-x86_64-libusb \
-  mingw-w64-x86_64-zlib \
-  mingw-w64-x86_64-freetype \
-  mingw-w64-x86_64-harfbuzz \
-  mingw-w64-x86_64-pixman \
-  mingw-w64-x86_64-gdk-pixbuf2 \
-  mingw-w64-x86_64-atk \
-  mingw-w64-x86_64-p11-kit \
-  mingw-w64-x86_64-libffi \
-  mingw-w64-x86_64-expat \
-  mingw-w64-x86_64-bzip2 \
-  mingw-w64-x86_64-xz \
-  mingw-w64-x86_64-zstd \
-  mingw-w64-x86_64-libiconv \
-  git python make patch rsync wget curl
-"@
+          $pkgs = @(
+            'mingw-w64-x86_64-toolchain',
+            'mingw-w64-x86_64-cmake',
+            'mingw-w64-x86_64-ninja',
+            'mingw-w64-x86_64-meson',
+            'mingw-w64-x86_64-pkgconf',
+            'mingw-w64-x86_64-yasm',
+            'mingw-w64-x86_64-boost',
+            'mingw-w64-x86_64-gettext',
+            'mingw-w64-x86_64-glib2',
+            'mingw-w64-x86_64-glibmm',
+            'mingw-w64-x86_64-gtk2',
+            'mingw-w64-x86_64-gtkmm',
+            'mingw-w64-x86_64-libsndfile',
+            'mingw-w64-x86_64-libcurl',
+            'mingw-w64-x86_64-libarchive',
+            'mingw-w64-x86_64-liblo',
+            'mingw-w64-x86_64-taglib',
+            'mingw-w64-x86_64-vamp-plugin-sdk',
+            'mingw-w64-x86_64-rubberband',
+            'mingw-w64-x86_64-cppunit',
+            'mingw-w64-x86_64-jack2',
+            'mingw-w64-x86_64-fftw',
+            'mingw-w64-x86_64-flac',
+            'mingw-w64-x86_64-libogg',
+            'mingw-w64-x86_64-fontconfig',
+            'mingw-w64-x86_64-cairo',
+            'mingw-w64-x86_64-cairomm',
+            'mingw-w64-x86_64-pango',
+            'mingw-w64-x86_64-pangomm',
+            'mingw-w64-x86_64-libpng',
+            'mingw-w64-x86_64-libxml2',
+            'mingw-w64-x86_64-lv2',
+            'mingw-w64-x86_64-serd',
+            'mingw-w64-x86_64-sord',
+            'mingw-w64-x86_64-sratom',
+            'mingw-w64-x86_64-lilv',
+            'mingw-w64-x86_64-soundtouch',
+            'mingw-w64-x86_64-libsamplerate',
+            'mingw-w64-x86_64-fluidsynth',
+            'mingw-w64-x86_64-libwebsockets',
+            'mingw-w64-x86_64-libusb',
+            'mingw-w64-x86_64-zlib',
+            'mingw-w64-x86_64-freetype',
+            'mingw-w64-x86_64-harfbuzz',
+            'mingw-w64-x86_64-pixman',
+            'mingw-w64-x86_64-gdk-pixbuf2',
+            'mingw-w64-x86_64-atk',
+            'mingw-w64-x86_64-p11-kit',
+            'mingw-w64-x86_64-libffi',
+            'mingw-w64-x86_64-expat',
+            'mingw-w64-x86_64-bzip2',
+            'mingw-w64-x86_64-xz',
+            'mingw-w64-x86_64-zstd',
+            'mingw-w64-x86_64-libiconv',
+            'git', 'python', 'make', 'patch', 'rsync', 'wget', 'curl'
+          )
+          & "C:\msys64\usr\bin\bash.exe" -lc "pacman -Sy --noconfirm --needed pacman-mirrors msys2-runtime"
+          & "C:\msys64\usr\bin\bash.exe" -lc "pacman -S --noconfirm --needed $($pkgs -join ' ')"
 
       - name: Verify mingw toolchain
         run: |
@@ -109,21 +109,7 @@ pacman -S --noconfirm --needed \
 
       - name: Configure Ardour (mingw)
         run: |
-          & "C:\msys64\usr\bin\bash.exe" -lc @"
-export PKG_CONFIG_PATH='/mingw64/lib/pkgconfig:/mingw64/share/pkgconfig'
-./waf configure \
-  --dist-target=mingw \
-  --ptformat \
-  --with-backends=jack,portaudio,dummy \
-  --optimize \
-  --cxx17 \
-  --prefix=/mingw64 \
-  --libdir=/mingw64/lib \
-  --no-phone-home \
-  --no-lrdf \
-  --no-nls \
-  2>&1 | tee configure.log
-"@
+          & "C:\msys64\usr\bin\bash.exe" -lc "export PKG_CONFIG_PATH='/mingw64/lib/pkgconfig:/mingw64/share/pkgconfig'; ./waf configure --dist-target=mingw --ptformat --with-backends=jack,portaudio,dummy --optimize --cxx17 --prefix=/mingw64 --libdir=/mingw64/lib --no-phone-home --no-lrdf --no-nls 2>&1 | tee configure.log"
 
       - name: Build Ardour (mingw)
         run: |
@@ -135,14 +121,7 @@ export PKG_CONFIG_PATH='/mingw64/lib/pkgconfig:/mingw64/share/pkgconfig'
 
       - name: Collect build artifacts
         run: |
-          & "C:\msys64\usr\bin\bash.exe" -lc @"
-mkdir -p ardour-win64-build
-cp -r build/gtk2_ardour/ardour*.exe ardour-win64-build/ 2>/dev/null || true
-find build -name '*.exe' -o -name '*.dll' -o -name '*.pdb' 2>/dev/null | while read f; do
-  cp --parents "$f" ardour-win64-build/ 2>/dev/null || true
-done
-ls -la ardour-win64-build/
-"@
+          & "C:\msys64\usr\bin\bash.exe" -lc "mkdir -p ardour-win64-build; cp -r build/gtk2_ardour/ardour*.exe ardour-win64-build/ 2>/dev/null || true; find build -name '*.exe' -o -name '*.dll' -o -name '*.pdb' 2>/dev/null | while read f; do cp --parents `"$f`" ardour-win64-build/ 2>/dev/null || true; done; ls -la ardour-win64-build/"
 
       - name: Upload Windows build artifacts
         uses: actions/upload-artifact@v4
